@@ -1,84 +1,49 @@
 #!/usr/bin/python3
-"""
-This module contains the "Base" class
-"""
-
-import csv
+import unittest
 import json
-import turtle
+from models.base import Base
 
 
-class Base:
-    """A base class"""
-    __nb_objects = 0
+class TestBaseCls(unittest.TestCase):
+    def test_id(self):
+        Base._Base__nb_objects = 0
+        b1 = Base()
+        b2 = Base()
+        b12 = Base(12)
+        b3 = Base()
+        self.assertEqual(b1.id, 1)
+        self.assertEqual(b2.id, 2)
+        self.assertEqual(b12.id, 12)
+        self.assertEqual(b3.id, 3)
 
-    def __init__(self, id=None):
-        """Initialize the base class"""
-        if id is None:
-            Base.__nb_objects += 1
-            self.id = self.__nb_objects
-        else:
-            self.id = id
+    def test_ToJsonString(self):
+        Base._Base__nb_objects = 0
+        temp = Base.to_json_string([])
+        self.assertEqual(temp, "[]")
+        temp = Base.to_json_string(None)
+        self.assertEqual(temp, "[]")
+        temp2 = [{'x': 2, 'width': 10, 'id': 1, 'height': 7, 'y': 8}]
+        temp = Base.to_json_string(temp2)
+        self.assertEqual(temp, json.dumps(temp2))
+        temp = Base.to_json_string([{}])
+        self.assertEqual(temp, json.dumps([{}]))
+        temp = Base.to_json_string([None])
+        self.assertEqual(temp, json.dumps([None]))
+        temp = Base.to_json_string([{"a": None}])
+        self.assertEqual(temp, json.dumps([{"a": None}]))
 
-    @staticmethod
-    def to_json_string(list_dictionaries):
-        """returns the JSON string representation of a list of dictionaries"""
-        if list_dictionaries is None:
-            list_dictionaries = []
-        return json.dumps(list_dictionaries)
+    def test_FromJsonString(self):
+        Base._Base__nb_objects = 0
+        temp = Base.from_json_string(json.dumps([]))
+        self.assertEqual(temp, [])
+        temp = Base.from_json_string(None)
+        self.assertEqual(temp, [])
+        temp2 = [{'x': 2, 'width': 10, 'id': 1, 'height': 7, 'y': 8}]
+        json_str = json.dumps(temp2)
+        temp = Base.from_json_string(json_str)
+        self.assertEqual(temp, json.loads(json_str))
 
-    @staticmethod
-    def from_json_string(json_string):
-        """returns the list of the JSON string representation json_string"""
-        if json_string is None or len(json_string) == 0:
-            return []
-        return json.loads(json_string)
-
-    @classmethod
-    def save_to_file(cls, list_objs):
-        """writes the JSON string representation of list_objs to a file"""
-        filename = cls.__name__ + ".json"
-        lo = []
-        if list_objs is not None:
-            for i in list_objs:
-                lo.append(cls.to_dictionary(i))
-        with open(filename, 'w') as f:
-            f.write(cls.to_json_string(lo))
-
-    @classmethod
-    def create(cls, **dictionary):
-        """returns an instance with all attributes already set"""
-        if cls.__name__ is "Rectangle":
-            dummy = cls(1, 1)
-        elif cls.__name__ is "Square":
-            dummy = cls(1)
-        dummy.update(**dictionary)
-        return dummy
-
-    @classmethod
-    def load_from_file(cls):
-        filename = cls.__name__ + ".json"
-        l = []
-        try:
-            with open(filename, 'r') as f:
-                l = cls.from_json_string(f.read())
-            for i, e in enumerate(l):
-                l[i] = cls.create(**l[i])
-        except:
-            pass
-        return l
-
-    @classmethod
-    def save_to_file_csv(cls, list_objs):
-        """serializes a list of Rectangles/Squares in csv"""
-        filename = cls.__name__ + ".csv"
-        with open(filename, 'w', newline='') as csvfile:
-            csv_writer = csv.writer(csvfile)
-            if cls.__name__ is "Rectangle":
-                for obj in list_objs:
-                    csv_writer.writerow([obj.id, obj.width, obj.height,
-                                         obj.x, obj.y])
-            elif cls.__name__ is "Square":
-                for obj in list_objs:
-                    csv_writer.writerow([obj.id, obj.size, obj.x, obj.y])
-
+    def test_SaveToFile(self):
+        pass
+if __name__ == "__main_":
+    unittest.main()
