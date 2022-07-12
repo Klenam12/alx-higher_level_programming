@@ -61,34 +61,4 @@ class TestSquare(unittest.TestCase):
         self.assertRaises(TypeError, Square, None)
         self.assertRaises(TypeError, Square)
         self.assertRaises(TypeError, Square, [10, 10],
-                          [10, 10], [10, 10])
-        self.assertRaises(TypeError, Square, "abebe",
-                          "abebe", "abebe")
-        self.assertRaises(TypeError, Square, 10,
-                          [10, 10], {10, 10})
-
-    def test_attrs_value_validation(self):
-        Base._Base__nb_objects = 0
-        w_err = "width must be > 0"
-        self.assertRaisesRegex(ValueError, w_err, Square, -20)
-        self.assertRaisesRegex(ValueError, w_err, Square, 0)
-        self.assertRaisesRegex(ValueError, w_err, Square, -20000000)
-
-        h_err = "width must be > 0"
-        self.assertRaisesRegex(ValueError, h_err, Square, -20)
-        self.assertRaisesRegex(ValueError, h_err, Square, 0)
-        self.assertRaisesRegex(ValueError, h_err, Square, -20000000)
-
-        x_err = "x must be >= 0"
-        self.assertRaisesRegex(ValueError, x_err, Square, 10, -10)
-        self.assertRaisesRegex(ValueError, x_err, Square, 10, -100000)
-
-        y_err = "y must be >= 0"
-        self.assertRaisesRegex(ValueError, y_err, Square, 10, 10, -10)
-        self.assertRaisesRegex(ValueError, y_err, Square, 1, 1, -100000)
-
-    def test_area(self):
-        Base._Base__nb_objects = 0
-        x = Square(10)
-        self.assertEqual(x.area(), 100)
 
